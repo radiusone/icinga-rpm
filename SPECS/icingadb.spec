@@ -16,7 +16,7 @@ Group:      System Environment/Daemons
 License:    GPL-2.0-or-later
 %else
 License:    GPLv2+
-%endif # suse
+%endif
 URL:        https://%{provider_prefix}
 Source0:    https://%{import_path}/archive/v%{version}.tar.gz
 Source1:    icingadb.service
@@ -37,9 +37,9 @@ Provides:       user(icingadb)
 Provides:       group(icingadb)
 Requires(pre):  shadow
 Requires(post): shadow
-%else # suse
+%else
 Requires(pre):  shadow-utils
-%endif # suse
+%endif
 
 %define configdir %{_sysconfdir}/%{name}
 %define service %{name}.service
@@ -66,7 +66,7 @@ install -d -m 0755 %{buildroot}%{_datadir}/%{name}
 
 %if "%{_vendor}" == "suse"
 ln -sf /usr/sbin/service %{buildroot}%{_sbindir}/rc%{name}
-%endif # suse
+%endif
 
 %pre
 getent group icingadb >/dev/null || groupadd -r icingadb
@@ -74,28 +74,28 @@ getent passwd icingadb >/dev/null || useradd -r -g icingadb -d /etc/icingadb -s 
 
 %if "%{_vendor}" == "suse"
 %service_add_pre %{service}
-%endif # suse
+%endif
 
 %post
 %if "%{_vendor}" == "suse"
 %service_add_post %{service}
-%else # suse
+%else
 %systemd_post %{service}
-%endif # suse
+%endif
 
 %preun
 %if "%{_vendor}" == "suse"
 %service_del_preun %{service}
-%else # suse
+%else
 %systemd_preun %{service}
-%endif # suse
+%endif
 
 %postun
 %if "%{_vendor}" == "suse"
 %service_del_postun %{service}
-%else # suse
+%else
 %systemd_postun %{service}
-%endif # suse
+%endif
 
 %clean
 rm -rf %{buildroot}
@@ -108,7 +108,7 @@ rm -rf %{buildroot}
 
 %if "%{_vendor}" == "suse"
 %{_sbindir}/rc%{name}
-%endif # suse
+%endif
 
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/schema

@@ -86,7 +86,7 @@ Summary:        Network monitoring application
 License:        GPL-2.0-or-later
 %else
 License:        GPLv2+
-%endif # suse
+%endif
 Group:          System/Monitoring
 Name:           icinga2
 Version:        2.13.5
@@ -147,7 +147,7 @@ BuildRequires:  make
       %define boost_rpath %{_libdir}/%{boost_library}
       # Note: the -impl suffix comes from current packages on OBS
       %define boost_devel_suffix -impl
-    %endif # suse_version < 1320
+    %endif
 BuildRequires:  libboost_context-devel%{?boost_devel_suffix} >= %{boost_min_version}
 BuildRequires:  libboost_coroutine-devel%{?boost_devel_suffix} >= %{boost_min_version}
 BuildRequires:  libboost_filesystem-devel%{?boost_devel_suffix} >= %{boost_min_version}
@@ -157,11 +157,13 @@ BuildRequires:  libboost_regex-devel%{?boost_devel_suffix} >= %{boost_min_versio
 BuildRequires:  libboost_system-devel%{?boost_devel_suffix} >= %{boost_min_version}
 BuildRequires:  libboost_thread-devel%{?boost_devel_suffix} >= %{boost_min_version}
 BuildRequires:  libboost_test-devel%{?boost_devel_suffix} >= %{boost_min_version}
-  %else # suse_version >= 1315
+  %else
+    # suse_version < 1315
     # old boost devel name
     %define boost_devel_pkg boost-devel
-  %endif # suse_version >= 1315
-%else # vendor == suse - assuming redhat or compatible
+  %endif
+%else 
+  # vendor != suse - assuming redhat or compatible
   # default boost devel package
   %define boost_devel_pkg boost-devel
 
@@ -170,12 +172,12 @@ BuildRequires:  libboost_test-devel%{?boost_devel_suffix} >= %{boost_min_version
     %define boost_library boost169
     %define boost_version 1.69
     %define boost_devel_pkg boost169-devel
-  %endif # el7
-%endif # vendor == suse
+  %endif
+%endif
 
 %if "%{?boost_devel_pkg}" != ""
 BuildRequires: %{boost_devel_pkg} >= %{boost_min_version}
-%endif # boost_devel_pkg
+%endif
 
 %if 0%{?use_systemd}
 BuildRequires:  systemd-devel
@@ -234,17 +236,17 @@ This subpackage provides documentation for Icinga 2.
 Summary:        IDO MySQL database backend for Icinga 2
 Group:          System/Monitoring
 %if "%{_vendor}" == "suse"
-BuildRequires:  libmysqlclient-devel
-%if 0%{?suse_version} >= 1310
-BuildRequires:  mysql-devel
-%endif
+  BuildRequires:  libmysqlclient-devel
+  %if 0%{?suse_version} >= 1310
+    BuildRequires:  mysql-devel
+  %endif
 
 %else
-%if 0%{?rhel} >= 8
-BuildRequires:  mariadb-connector-c-devel
-%else
-BuildRequires:  mysql-devel
-%endif #suse
+  %if 0%{?rhel} >= 8
+    BuildRequires:  mariadb-connector-c-devel
+  %else
+    BuildRequires:  mysql-devel
+  %endif
 %endif
 
 Requires:       %{name}-bin = %{version}-%{release}
@@ -404,7 +406,7 @@ CMAKE_OPTS="$CMAKE_OPTS -DICINGA2_WITH_PGSQL=OFF"
 
 %if "%{?boost_rpath}" != ""
 CMAKE_OPTS="$CMAKE_OPTS -DCMAKE_INSTALL_RPATH=%{boost_rpath}"
-%endif # boost_rpath
+%endif
 
 %if "%{?boost_library}" != ""
 # Boost_NO_BOOST_CMAKE=ON  - disable search for cmake
@@ -415,7 +417,7 @@ CMAKE_OPTS="$CMAKE_OPTS
  -DBOOST_LIBRARYDIR=%{_libdir}/%{boost_library} \
  -DBOOST_INCLUDEDIR=/usr/include/%{boost_library} \
  -DBoost_ADDITIONAL_VERSIONS='%{boost_version};%{boost_version}.0'"
-%endif # boost_library
+%endif
 
 %if 0%{?use_systemd}
 CMAKE_OPTS="$CMAKE_OPTS -DUSE_SYSTEMD=ON"
