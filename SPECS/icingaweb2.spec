@@ -15,9 +15,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}
 Packager:       Icinga GmbH <info@icinga.com>
 
 %if 0%{?fedora} || 0%{?rhel} || 0%{?amzn}
-%if 0%{?rhel} == 7
-%define php_scl         rh-php73
-%endif
 
 %if 0%{?el5}%{?el6}%{?amzn}
 %define use_selinux 0
@@ -25,25 +22,16 @@ Packager:       Icinga GmbH <info@icinga.com>
 %define use_selinux 1
 %endif
 
-%if 0%{?php_scl:1}
-%define php_scl_prefix  %{php_scl}-
-%define php_runtime     %{php_scl_prefix}php-fpm
-%define php_bin         /opt/rh/%{php_scl}/root/usr/bin/php
-%define php_fpm         1
-%else
-%define php_runtime     %{php}
-%endif
-
-%define php             %{?php_scl_prefix}php
-%define php_cli         %{php}-cli
-%define php_common      %{php}-common
+%define php_runtime     php
+%define php_cli         php-cli
+%define php_common      php-common
 %define wwwconfigdir    %{_sysconfdir}/httpd/conf.d
 %define wwwuser         apache
 
 # extra requirements on RHEL
-Requires:               %{php}-mysqlnd
-Requires:               %{php}-pgsql
-Requires:               %{php}-ldap
+Requires:               php-mysqlnd
+Requires:               php-pgsql
+Requires:               php-ldap
 %endif
 
 # minimum required PHP version
@@ -55,10 +43,9 @@ Requires:               %{php}-ldap
 %if 0%{?suse_version}
 %define wwwconfigdir    %{_sysconfdir}/apache2/conf.d
 %define wwwuser         wwwrun
-%define php             php
 %define php_runtime     mod_php_any
-%define php_common      %{php}
-%define php_cli         %{php}
+%define php_common      php
+%define php_cli         php
 %endif
 
 %{?amzn:Requires(pre):          shadow-utils}
@@ -118,18 +105,18 @@ Common files for Icinga Web 2 and the Icinga CLI
 Summary:                    Icinga Web 2 PHP library
 Group:                      Development/Libraries
 Requires:                   %{php_common} >= %{php_version}
-Requires:                   %{php}-gd %{php}-intl %{php}-mbstring
+Requires:                   php-gd php-intl php-mbstring
 %if 0%{?sle_version} >= 150200
-Requires:                   %{php}-dom %{php}-curl %{php}-fileinfo
+Requires:                   php-dom php-curl php-fileinfo
 %endif
-%{?rhel:Requires:           %{php}-pdo %{php}-xml}
+%{?rhel:Requires:           php-pdo php-xml}
 %if 0%{?rhel} >= 8 || 0%{?fedora} >= 30
-Requires:                   %{php}-json
+Requires:                   php-json
 %endif rhel >= 8 || fedora >= 30
 Requires:                   %{name}-vendor-zf1 = %{version}-%{release}
-%{?amzn:Requires:           %{php}-pecl-imagick}
+%{?amzn:Requires:           php-pecl-imagick}
 %{?fedora:Requires:         php-pecl-imagick}
-%{?suse_version:Requires:   %{php}-gettext %{php}-json %{php}-openssl %{php}-posix}
+%{?suse_version:Requires:   php-gettext php-json php-openssl php-posix}
 
 %description -n php-Icinga
 Icinga Web 2 PHP library

@@ -13,34 +13,17 @@ URL:            https://icinga.com
 Source0:        https://github.com/Icinga/%{module_name}/archive/v%{version}.tar.gz
 BuildArch:      noarch
 
-# Define php runtime identifier
-%if 0%{?fedora} || 0%{?rhel} || 0%{?amzn}
-%if 0%{?rhel} == 7
-%define php_scl         rh-php73
-%endif
-
-%if 0%{?php_scl:1}
-%define php_scl_prefix  %{php_scl}-
-%endif
-
-%define php             %{?php_scl_prefix}php
-%endif
-
-%if 0%{?suse_version}
-%define php             php
-%endif
-
 %global basedir %{_datadir}/icinga-php/ipl
 
 Requires:       icinga-php-common
 Requires:       icinga-php-thirdparty
 
 # php extension requirements
-Requires:                   %{php}-intl
-%{?rhel:Requires:           %{php}-pdo}
-%{?suse_version:Requires:   %{php}-gettext %{php}-json %{php}-openssl}
+Requires:                   php-intl
+%{?rhel:Requires:           php-pdo}
+%{?suse_version:Requires:   php-gettext php-json php-openssl}
 %if 0%{?rhel} >= 8 || 0%{?fedora} >= 30
-Requires:                   %{php}-json
+Requires:                   php-json
 %endif
 
 %description
