@@ -243,9 +243,9 @@ Group:          System/Monitoring
 
 %else
   %if 0%{?rhel} >= 8
-    BuildRequires:  mariadb-connector-c-devel
+BuildRequires:  mariadb-connector-c-devel
   %else
-    BuildRequires:  mysql-devel
+BuildRequires:  mysql-devel
   %endif
 %endif
 
