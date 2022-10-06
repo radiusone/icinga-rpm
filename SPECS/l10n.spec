@@ -21,23 +21,13 @@ Source0:    https://github.com/Icinga/L10n/archive/v%{version}.tar.gz
 BuildArch:  noarch
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}
 Packager:   Icinga GmbH <info@icinga.com>
-
+Source1:    icinga-l10n.fc
+Source2:    icinga-l10n.te
 
 %prep
 %setup -q -n L10n-%{version}
-cp -r %{_topdir}/../selinux selinux
 
 %build
-%if 0%{?use_selinux}
-cd selinux
-for selinuxvariant in %{selinux_variants}
-do
-  make NAME=${selinuxvariant} -f /usr/share/selinux/devel/Makefile
-  mv icinga-l10n.pp icinga-l10n.pp.${selinuxvariant}
-  make NAME=${selinuxvariant} -f /usr/share/selinux/devel/Makefile clean
-done
-cd -
-%endif
 
 %install
 mkdir -p %{buildroot}/%{basedir}
@@ -46,18 +36,22 @@ cp COPYING %{buildroot}/%{basedir}
 cp -prv locale %{buildroot}/%{basedir}
 find %{buildroot}/%{basedir}/locale -name *.po -delete
 %if 0%{?use_selinux}
-cd selinux
+mkdir %{buildroot}%{_docdir}
+cp %{SOURCE1} %{buildroot}%{_docdir}
+cp %{SOURCE2} %{buildroot}%{_docdir}
+cd %{buildroot}%{_docdir}
 for selinuxvariant in %{selinux_variants}
 do
+  make NAME=${selinuxvariant} -f /usr/share/selinux/devel/Makefile
   install -d %{buildroot}%{_datadir}/selinux/${selinuxvariant}
-  install -p -m 644 icinga-l10n.pp.${selinuxvariant} %{buildroot}%{_datadir}/selinux/${selinuxvariant}/icinga-l10n.pp
+  install -p -m 644 icinga-l10n.pp %{buildroot}%{_datadir}/selinux/${selinuxvariant}/icinga-l10n.pp
+  make NAME=${selinuxvariant} -f /usr/share/selinux/devel/Makefile clean
 done
 cd -
 %endif
 
 %clean
 rm -rf %{buildroot}
-
 
 # Main package
 %description
@@ -101,7 +95,7 @@ fi
 
 %files selinux
 %defattr(-,root,root,0755)
-%doc selinux/*
+%doc %{_docdir}/*
 %{_datadir}/selinux/*/icinga-l10n.pp
 
 %endif
