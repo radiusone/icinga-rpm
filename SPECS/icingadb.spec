@@ -25,6 +25,11 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}
 
 BuildRequires: gcc
 BuildRequires: git
+%if "%{_vendor}" == "suse"
+BuildRequires: go >= 1.18
+%else
+BuildRequires: golang >= 1.18
+%endif
 
 %{?systemd_requires}
 BuildRequires: systemd
