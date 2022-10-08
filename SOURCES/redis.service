@@ -1,0 +1,18 @@
+[Unit]
+Description=IcingaDB Redis persistent key-value database
+After=network.target
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/icingadb-redis-server /etc/icingadb-redis/icingadb-redis.conf --daemonize no --supervised systemd
+ExecStop=/usr/libexec/icingadb-redis-shutdown
+Type=notify
+User=icingadb-redis
+Group=icingadb-redis
+RuntimeDirectory=icingadb-redis
+RuntimeDirectoryMode=0755
+
+[Install]
+WantedBy=multi-user.target
+

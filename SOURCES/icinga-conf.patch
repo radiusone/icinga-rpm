@@ -1,0 +1,180 @@
+Author: Henrik Triem <henrik.triem@icinga.com>
+Date:   Mon Jun 27 18:00:00 2022 +0100
+
+    Re-arrange patches
+
+diff --git a/redis.conf b/redis.conf
+--- a/redis.conf
++++ b/redis.conf
+@@ -135,7 +135,7 @@
+
+ # Accept connections on the specified port, default is 6379 (IANA #815344).
+ # If port 0 is specified Redis will not listen on a TCP socket.
+-port 6379
++port 6380
+
+ # TCP listen() backlog.
+ #
+@@ -152,7 +152,7 @@
+ # incoming connections. There is no default, so Redis will not listen
+ # on a unix socket when not specified.
+ #
+-# unixsocket /run/redis.sock
++# unixsocket /run/icingadb-redis/icingadb-redis-server.sock
+ # unixsocketperm 700
+
+ # Close the connection after a client is idle for N seconds (0 to disable)
+@@ -192,7 +192,7 @@
+ # default port, use:
+ #
+ # port 0
+-# tls-port 6379
++# tls-port 6380
+
+ # Configure a X.509 certificate and private key to use for authenticating the
+ # server to connected clients, masters or cluster peers.  These files should be
+@@ -306,7 +306,7 @@
+ # By default Redis does not run as a daemon. Use 'yes' if you need it.
+ # Note that Redis will write a pid file in /var/run/redis.pid when daemonized.
+ # When Redis is supervised by upstart or systemd, this parameter has no impact.
+-daemonize no
++daemonize yes
+
+ # If you run Redis from upstart or systemd, Redis can interact with your
+ # supervision tree. Options:
+@@ -338,7 +338,7 @@
+ #
+ # Note that on modern Linux systems "/run/redis.pid" is more conforming
+ # and should be used instead.
+-pidfile /var/run/redis_6379.pid
++pidfile /run/icingadb-redis/icingadb-redis-server.pid
+
+ # Specify the server verbosity level.
+ # This can be one of:
+@@ -351,7 +351,7 @@
+ # Specify the log file name. Also the empty string can be used to force
+ # Redis to log on the standard output. Note that if you use standard
+ # output for logging but daemonize, logs will be sent to /dev/null
+-logfile ""
++logfile /var/log/icingadb-redis/icingadb-redis-server.log
+
+ # To enable logging to the system logger, just set 'syslog-enabled' to yes,
+ # and optionally update the other syslog parameters to suit your needs.
+@@ -501,7 +501,7 @@
+ # The Append Only File will also be created inside this directory.
+ #
+ # Note that you must specify a directory here, not a file name.
+-dir ./
++dir /var/lib/icingadb-redis
+
+ ################################# REPLICATION #################################
+
+@@ -1022,7 +1022,7 @@
+ # The format of the external ACL user file is exactly the same as the
+ # format that is used inside redis.conf to describe users.
+ #
+-# aclfile /etc/redis/users.acl
++# aclfile /etc/icingadb-redis/users.acl
+
+ # IMPORTANT NOTE: starting with Redis 6 "requirepass" is just a compatibility
+ # layer on top of the new ACL system. The option effect will be just setting
+@@ -1581,7 +1581,7 @@
+ # Make sure that instances running in the same system do not have
+ # overlapping cluster configuration file names.
+ #
+-# cluster-config-file nodes-6379.conf
++# cluster-config-file nodes-6380.conf
+
+ # Cluster node timeout is the amount of milliseconds a node must be unreachable
+ # for it to be considered in failure state.
+@@ -1790,9 +1790,9 @@
+ # Example:
+ #
+ # cluster-announce-ip 10.1.1.5
+-# cluster-announce-tls-port 6379
++# cluster-announce-tls-port 6380
+ # cluster-announce-port 0
+-# cluster-announce-bus-port 6380
++# cluster-announce-bus-port 6381
+
+ ################################## SLOW LOG ###################################
+
+diff --git a/sentinel.conf b/sentinel.conf
+--- a/sentinel.conf
++++ b/sentinel.conf
+@@ -7,22 +7,22 @@
+
+ # port <sentinel-port>
+ # The port that this sentinel instance will run on
+-port 26379
++port 26380
+
+ # By default Redis Sentinel does not run as a daemon. Use 'yes' if you need it.
+-# Note that Redis will write a pid file in /var/run/redis-sentinel.pid when
+-# daemonized.
+-daemonize no
++# Note that Redis will write a pid file in /var/run/icingadb-redis-sentinel.pid
++# when daemonized.
++daemonize yes
+
+ # When running daemonized, Redis Sentinel writes a pid file in
+-# /var/run/redis-sentinel.pid by default. You can specify a custom pid file
+-# location here.
+-pidfile /var/run/redis-sentinel.pid
++# /var/run/icingadb-redis-sentinel.pid by default. You can specify a custom
++# pid file location here.
++pidfile /run/icingadb-sentinel/icingadb-redis-sentinel.pid
+
+ # Specify the log file name. Also the empty string can be used to force
+ # Sentinel to log on the standard output. Note that if you use standard
+ # output for logging but daemonize, logs will be sent to /dev/null
+-logfile ""
++logfile /var/log/icingadb-redis/icingadb-redis-sentinel.log
+
+ # sentinel announce-ip <ip>
+ # sentinel announce-port <port>
+@@ -51,7 +51,7 @@
+ # For Redis Sentinel to chdir to /tmp at startup is the simplest thing
+ # for the process to don't interfere with administrative tasks such as
+ # unmounting filesystems.
+-dir /tmp
++dir /var/lib/icingadb-redis
+
+ # sentinel monitor <master-name> <ip> <redis-port> <quorum>
+ #
+@@ -70,7 +70,7 @@
+ #
+ # Note: master name should not include special characters or spaces.
+ # The valid charset is A-z 0-9 and the three characters ".-_".
+-sentinel monitor mymaster 127.0.0.1 6379 2
++sentinel monitor mymaster 127.0.0.1 6380 2
+
+ # sentinel auth-pass <master-name> <password>
+ #
+@@ -147,7 +147,7 @@
+ # The format of the external ACL user file is exactly the same as the
+ # format that is used inside redis.conf to describe users.
+ #
+-# aclfile /etc/redis/sentinel-users.acl
++# aclfile /etc/icingadb-redis/icingadb-sentinel-users.acl
+
+ # requirepass <password>
+ #
+@@ -250,7 +250,7 @@
+ #
+ # Example:
+ #
+-# sentinel notification-script mymaster /var/redis/notify.sh
++# sentinel notification-script mymaster /var/icingadb-redis/notify.sh
+
+ # CLIENTS RECONFIGURATION SCRIPT
+ #
+@@ -275,7 +275,7 @@
+ #
+ # Example:
+ #
+-# sentinel client-reconfig-script mymaster /var/redis/reconfig.sh
++# sentinel client-reconfig-script mymaster /var/icingadb-redis/reconfig.sh
+
+ # SECURITY
+ #

@@ -1,0 +1,196 @@
+Author: Henrik Triem <henrik.triem@icinga.com>
+Date:   Mon Jun 27 18:00:00 2022 +0100
+
+    Re-arrange patches
+
+diff --git a/deps/hiredis/Makefile b/deps/hiredis/Makefile
+--- a/deps/hiredis/Makefile
++++ b/deps/hiredis/Makefile
+@@ -24,7 +24,7 @@ INSTALL_LIBRARY_PATH= $(DESTDIR)$(PREFIX
+ INSTALL_PKGCONF_PATH= $(INSTALL_LIBRARY_PATH)/$(PKGCONF_PATH)
+
+ # redis-server configuration used for testing
+-REDIS_PORT=56379
++REDIS_PORT=56380
+ REDIS_SERVER=redis-server
+ define REDIS_TEST_CONFIG
+ 	daemonize yes
+
+diff --git a/deps/hiredis/test.c b/deps/hiredis/test.c
+--- a/deps/hiredis/test.c
++++ b/deps/hiredis/test.c
+@@ -799,7 +799,7 @@ static void test_allocator_injection(voi
+     hiredisSetAllocators(&ha);
+
+     test("redisContext uses injected allocators: ");
+-    redisContext *c = redisConnect("localhost", 6379);
++    redisContext *c = redisConnect("localhost", 6380);
+     test_cond(c == NULL);
+
+     test("redisReader uses injected allocators: ");
+@@ -823,12 +823,12 @@ static void test_blocking_connection_err
+     struct addrinfo hints = {.ai_family = AF_INET};
+     struct addrinfo *ai_tmp = NULL;
+
+-    int rv = getaddrinfo(HIREDIS_BAD_DOMAIN, "6379", &hints, &ai_tmp);
++    int rv = getaddrinfo(HIREDIS_BAD_DOMAIN, "6380", &hints, &ai_tmp);
+     if (rv != 0) {
+         // Address does *not* exist
+         test("Returns error when host cannot be resolved: ");
+         // First see if this domain name *actually* resolves to NXDOMAIN
+-        c = redisConnect(HIREDIS_BAD_DOMAIN, 6379);
++        c = redisConnect(HIREDIS_BAD_DOMAIN, 6380);
+         test_cond(
+             c->err == REDIS_ERR_OTHER &&
+             (strcmp(c->errstr, "Name or service not known") == 0 ||
+@@ -1885,7 +1885,7 @@ int main(int argc, char **argv) {
+     struct config cfg = {
+         .tcp = {
+             .host = "127.0.0.1",
+-            .port = 6379
++            .port = 6380
+         },
+         .unix_sock = {
+             .path = "/tmp/redis.sock"
+diff --git a/deps/hiredis/test.sh b/deps/hiredis/test.sh
+--- a/deps/hiredis/test.sh
++++ b/deps/hiredis/test.sh
+@@ -1,7 +1,7 @@
+ #!/bin/sh -ue
+
+ REDIS_SERVER=${REDIS_SERVER:-redis-server}
+-REDIS_PORT=${REDIS_PORT:-56379}
++REDIS_PORT=${REDIS_PORT:-56380}
+ REDIS_SSL_PORT=${REDIS_SSL_PORT:-56443}
+ TEST_SSL=${TEST_SSL:-0}
+ SKIPS_AS_FAILS=${SKIPS_AS_FAILS-:0}
+
+diff --git a/deps/hiredis/examples/example-ae.c b/deps/hiredis/examples/example-ae.c
+--- a/deps/hiredis/examples/example-ae.c
++++ b/deps/hiredis/examples/example-ae.c
+@@ -43,7 +43,7 @@ void disconnectCallback(const redisAsync
+ int main (int argc, char **argv) {
+     signal(SIGPIPE, SIG_IGN);
+
+-    redisAsyncContext *c = redisAsyncConnect("127.0.0.1", 6379);
++    redisAsyncContext *c = redisAsyncConnect("127.0.0.1", 6380);
+     if (c->err) {
+         /* Let *c leak for now... */
+         printf("Error: %s\n", c->errstr);
+
+diff --git a/deps/hiredis/examples/example-glib.c b/deps/hiredis/examples/example-glib.c
+--- a/deps/hiredis/examples/example-glib.c
++++ b/deps/hiredis/examples/example-glib.c
+@@ -52,7 +52,7 @@ main (gint argc     G_GNUC_UNUSED,
+     GMainContext *context = NULL;
+     GSource *source;
+
+-    ac = redisAsyncConnect("127.0.0.1", 6379);
++    ac = redisAsyncConnect("127.0.0.1", 6380);
+     if (ac->err) {
+         g_printerr("%s\n", ac->errstr);
+         exit(EXIT_FAILURE);
+
+diff --git a/deps/hiredis/examples/example-ivykis.c b/deps/hiredis/examples/example-ivykis.c
+--- a/deps/hiredis/examples/example-ivykis.c
++++ b/deps/hiredis/examples/example-ivykis.c
+@@ -39,7 +39,7 @@ int main (int argc, char **argv) {
+
+     iv_init();
+
+-    redisAsyncContext *c = redisAsyncConnect("127.0.0.1", 6379);
++    redisAsyncContext *c = redisAsyncConnect("127.0.0.1", 6380);
+     if (c->err) {
+         /* Let *c leak for now... */
+         printf("Error: %s\n", c->errstr);
+
+diff --git a/deps/hiredis/examples/example-libev.c b/deps/hiredis/examples/example-libev.c
+--- a/deps/hiredis/examples/example-libev.c
++++ b/deps/hiredis/examples/example-libev.c
+@@ -37,7 +37,7 @@ int main (int argc, char **argv) {
+     signal(SIGPIPE, SIG_IGN);
+ #endif
+
+-    redisAsyncContext *c = redisAsyncConnect("127.0.0.1", 6379);
++    redisAsyncContext *c = redisAsyncConnect("127.0.0.1", 6380);
+     if (c->err) {
+         /* Let *c leak for now... */
+         printf("Error: %s\n", c->errstr);
+
+diff --git a/deps/hiredis/examples/example-libevent.c b/deps/hiredis/examples/example-libevent.c
+--- a/deps/hiredis/examples/example-libevent.c
++++ b/deps/hiredis/examples/example-libevent.c
+@@ -44,7 +44,7 @@ int main (int argc, char **argv) {
+
+     struct event_base *base = event_base_new();
+     redisOptions options = {0};
+-    REDIS_OPTIONS_SET_TCP(&options, "127.0.0.1", 6379);
++    REDIS_OPTIONS_SET_TCP(&options, "127.0.0.1", 6380);
+     struct timeval tv = {0};
+     tv.tv_sec = 1;
+     options.connect_timeout = &tv;
+
+diff --git a/deps/hiredis/examples/example-libuv.c b/deps/hiredis/examples/example-libuv.c
+--- a/deps/hiredis/examples/example-libuv.c
++++ b/deps/hiredis/examples/example-libuv.c
+@@ -54,7 +54,7 @@ int main (int argc, char **argv) {
+
+     uv_loop_t* loop = uv_default_loop();
+
+-    redisAsyncContext *c = redisAsyncConnect("127.0.0.1", 6379);
++    redisAsyncContext *c = redisAsyncConnect("127.0.0.1", 6380);
+     if (c->err) {
+         /* Let *c leak for now... */
+         printf("Error: %s\n", c->errstr);
+
+diff --git a/deps/hiredis/examples/example-macosx.c b/deps/hiredis/examples/example-macosx.c
+--- a/deps/hiredis/examples/example-macosx.c
++++ b/deps/hiredis/examples/example-macosx.c
+@@ -44,7 +44,7 @@ int main (int argc, char **argv) {
+         return 1;
+     }
+
+-    redisAsyncContext *c = redisAsyncConnect("127.0.0.1", 6379);
++    redisAsyncContext *c = redisAsyncConnect("127.0.0.1", 6380);
+     if (c->err) {
+         /* Let *c leak for now... */
+         printf("Error: %s\n", c->errstr);
+
+diff --git a/deps/hiredis/examples/example-push.c b/deps/hiredis/examples/example-push.c
+--- a/deps/hiredis/examples/example-push.c
++++ b/deps/hiredis/examples/example-push.c
+@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
+     redisReply *reply;
+
+     const char *hostname = (argc > 1) ? argv[1] : "127.0.0.1";
+-    int port = (argc > 2) ? atoi(argv[2]) : 6379;
++    int port = (argc > 2) ? atoi(argv[2]) : 6380;
+
+     redisOptions o = {0};
+     REDIS_OPTIONS_SET_TCP(&o, hostname, port);
+
+diff --git a/deps/hiredis/examples/example-qt.cpp b/deps/hiredis/examples/example-qt.cpp
+--- a/deps/hiredis/examples/example-qt.cpp
++++ b/deps/hiredis/examples/example-qt.cpp
+@@ -19,7 +19,7 @@ void getCallback(redisAsyncContext *, vo
+
+ void ExampleQt::run() {
+
+-    m_ctx = redisAsyncConnect("localhost", 6379);
++    m_ctx = redisAsyncConnect("localhost", 6380);
+
+     if (m_ctx->err) {
+         cerr << "Error: " << m_ctx->errstr << endl;
+
+diff --git a/deps/hiredis/examples/example.c b/deps/hiredis/examples/example.c
+--- a/deps/hiredis/examples/example.c
++++ b/deps/hiredis/examples/example.c
+@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
+         }
+     }
+
+-    int port = (argc > 2) ? atoi(argv[2]) : 6379;
++    int port = (argc > 2) ? atoi(argv[2]) : 6380;
+
+     struct timeval timeout = { 1, 500000 }; // 1.5 seconds
+     if (isunix) {
