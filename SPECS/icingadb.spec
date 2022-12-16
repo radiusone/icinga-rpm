@@ -1,4 +1,4 @@
-%define revision 2
+%define revision 0
 
 %global provider        github
 %global provider_tld    com
@@ -8,7 +8,7 @@
 %global import_path     %{provider_prefix}
 
 Name:       icingadb
-Version:    1.0.0
+Version:    1.1.0
 Release:    %{revision}%{?dist}
 Summary:    Icinga DB
 Group:      System Environment/Daemons

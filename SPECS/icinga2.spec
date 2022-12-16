@@ -1,6 +1,6 @@
 # Icinga 2 | (c) 2012 Icinga GmbH | GPLv2+
 
-%define revision 1
+%define revision 0
 
 # make sure that _rundir is working on older systems
 %if ! %{defined _rundir}
@@ -89,7 +89,7 @@ License:        GPLv2+
 %endif
 Group:          System/Monitoring
 Name:           icinga2
-Version:        2.13.5
+Version:        2.13.6
 Release:        %{revision}%{?dist}
 Url:            https://www.icinga.com/
 Source:         https://github.com/Icinga/%{name}/archive/v%{version}.tar.gz

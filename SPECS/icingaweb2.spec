@@ -1,9 +1,9 @@
 # Icinga Web 2 | (c) 2013-2017 Icinga Development Team | GPLv2+
 
-%define revision 1
+%define revision 0
 
 Name:           icingaweb2
-Version:        2.11.1
+Version:        2.11.3
 Release:        %{revision}%{?dist}
 Summary:        Icinga Web 2
 Group:          Applications/System

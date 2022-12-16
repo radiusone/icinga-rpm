@@ -1,10 +1,10 @@
 # Icinga DB Web for Icinga Web 2 | (c) 2021 Icinga GmbH | GPLv2+
 
-%global revision 1
+%global revision 0
 %global module_name icingadb
 
 Name:           icingadb-web
-Version:        1.0.0
+Version:        1.0.2
 Release:        %{revision}%{?dist}
 Summary:        Icinga DB Web for Icinga Web 2
 Group:          Applications/System
@@ -25,7 +25,7 @@ Icinga DB Web offers a modern and streamlined design to provide a clear
 and concise overview of your monitoring environment.
 
 %prep
-%setup
+%setup -q
 
 %install
 mkdir -vp %{buildroot}%{basedir}
