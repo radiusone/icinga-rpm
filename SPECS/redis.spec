@@ -15,7 +15,7 @@
 
 # Commit IDs for the (unversioned) redis-doc repository
 # https://fedoraproject.org/wiki/Packaging:SourceURL "Commit Revision"
-%global doc_commit af2e6f814be4cadd9b619001b0acf0754f8dd057
+%global doc_commit e50ea1872e4efaf2a7174700050b7ce1c47dc2a8
 %global short_doc_commit %(c=%{doc_commit}; echo ${c:0:7})
 
 # %%{rpmmacrodir} not usable on EL-6
@@ -26,7 +26,7 @@
 %global redis_port 6380
 
 Name:              %{?pkg_prefix}redis
-Version:           7.0.2
+Version:           7.0.5
 Release:           1%{?dist}
 Summary:           A persistent key-value database
 # redis, jemalloc, linenoise, lzf, hiredis are BSD
@@ -64,6 +64,7 @@ BuildRequires:     tcl
 %endif
 BuildRequires:     pkgconfig(libsystemd)
 BuildRequires:     systemd-devel
+BuildRequires:     systemd-rpm-macros
 BuildRequires:     openssl-devel
 # redis-trib functionality migrated to redis-cli
 Obsoletes:         redis-trib < 5
@@ -247,7 +248,7 @@ ln -s redis.conf.5   %{buildroot}%{_mandir}/man5/%{pkg_prefix}redis-sentinel.con
 
 # Install documentation and html pages
 doc=$(echo %{buildroot}/%{_docdir}/%{name})
-for page in 00-RELEASENOTES BUGS CONTRIBUTING MANIFESTO; do
+for page in 00-RELEASENOTES BUGS MANIFESTO *.md; do
     install -Dpm644 $page $doc/$page
 done
 for page in $(find doc -name \*.md | sed -e 's|.md$||g'); do

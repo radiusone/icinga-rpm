@@ -67,15 +67,6 @@ diff --git a/src/server.c b/src/server.c
      server.master = NULL;
      server.cached_master = NULL;
      server.master_initial_offset = -1;
-@@ -6097,7 +6097,7 @@ void usage(void) {
-     fprintf(stderr,"       ./redis-server --test-memory <megabytes>\n\n");
-     fprintf(stderr,"Examples:\n");
-     fprintf(stderr,"       ./redis-server (run the server with default conf)\n");
--    fprintf(stderr,"       ./redis-server /etc/redis/6379.conf\n");
-+    fprintf(stderr,"       ./redis-server /etc/redis/6380.conf\n");
-     fprintf(stderr,"       ./redis-server --port 7777\n");
-     fprintf(stderr,"       ./redis-server --port 7777 --replicaof 127.0.0.1 8888\n");
-     fprintf(stderr,"       ./redis-server /etc/myredis.conf --loglevel verbose -\n");
 
 diff --git a/src/Makefile b/src/Makefile
 --- a/src/Makefile
