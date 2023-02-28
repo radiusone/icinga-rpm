@@ -89,7 +89,7 @@ License:        GPLv2+
 %endif
 Group:          System/Monitoring
 Name:           icinga2
-Version:        2.13.6
+Version:        2.13.7
 Release:        %{revision}%{?dist}
 Url:            https://www.icinga.com/
 Source:         https://github.com/Icinga/%{name}/archive/v%{version}.tar.gz
