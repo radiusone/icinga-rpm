@@ -112,7 +112,7 @@ Requires:                   php-dom php-curl php-fileinfo
 %{?rhel:Requires:           php-pdo php-xml}
 %if 0%{?rhel} >= 8 || 0%{?fedora} >= 30
 Requires:                   php-json
-%endif rhel >= 8 || fedora >= 30
+%endif
 Requires:                   %{name}-vendor-zf1 = %{version}-%{release}
 %{?amzn:Requires:           php-pecl-imagick}
 %{?fedora:Requires:         php-pecl-imagick}
