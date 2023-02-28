@@ -3,7 +3,7 @@
 %define revision 0
 
 Name:           icingaweb2
-Version:        2.11.3
+Version:        2.11.4
 Release:        %{revision}%{?dist}
 Summary:        Icinga Web 2
 Group:          Applications/System
@@ -13,6 +13,18 @@ Source0:        https://github.com/Icinga/%{name}/archive/v%{version}.tar.gz
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}
 Packager:       Icinga GmbH <info@icinga.com>
+
+Source1:        icingaweb2.fc
+Source2:        icingaweb2.te
+Source3:        icingaweb2.sh
+Source4:        icingaweb2.if
+Source5:        icingaweb2.conf
+Source6:        icingaweb2.fpm.conf
+Source7:        icingaweb2.index.php
+Source8:        icingacli
+Source9:        icingaweb2.doc.config.ini
+Source10:       icingaweb2.setup.config.ini
+Source11:       icingaweb2.translation.config.ini
 
 %if 0%{?fedora} || 0%{?rhel} || 0%{?amzn}
 
@@ -223,22 +235,8 @@ Icinga Web 2's fork of Zend Framework 1
 
 %prep
 %setup -q
-%if 0%{?use_selinux}
-mkdir selinux
-cp -p packages/selinux/icingaweb2.{fc,if,te} selinux
-%endif
 
 %build
-%if 0%{?use_selinux}
-cd selinux
-for selinuxvariant in %{selinux_variants}
-do
-  make NAME=${selinuxvariant} -f /usr/share/selinux/devel/Makefile
-  mv icingaweb2.pp icingaweb2.pp.${selinuxvariant}
-  make NAME=${selinuxvariant} -f /usr/share/selinux/devel/Makefile clean
-done
-cd -
-%endif
 
 %install
 rm -rf %{buildroot}
@@ -250,27 +248,35 @@ cp -prv library/Icinga %{buildroot}/%{phpdir}
 cp -prv library/vendor/{dompdf,HTMLPurifier*,JShrink,lessphp,Parsedown,Zend} %{buildroot}/%{basedir}/library/vendor
 cp -prv public/{css,font,img,js,error_norewrite.html,error_unavailable.html} %{buildroot}/%{basedir}/public
 %if 0%{?php_fpm:1}
-cp -pv packages/files/apache/icingaweb2.fpm.conf %{buildroot}/%{wwwconfigdir}/icingaweb2.conf
+cp -pv %{SOURCE6} %{buildroot}/%{wwwconfigdir}/icingaweb2.conf
 %else
-cp -pv packages/files/apache/icingaweb2.conf %{buildroot}/%{wwwconfigdir}/icingaweb2.conf
+cp -pv %{SOURCE5} %{buildroot}/%{wwwconfigdir}/icingaweb2.conf
 %endif
-cp -pv packages/files/bin/icingacli %{buildroot}/%{bindir}
+cp -pv %{SOURCE8} %{buildroot}/%{bindir}
 %if 0%{?php_bin:1}
 sed -i '1 s~#!.*~#!%{php_bin}~' %{buildroot}/%{bindir}/icingacli
 %endif
-cp -pv packages/files/public/index.php %{buildroot}/%{basedir}/public
-cp -prv etc/schema %{buildroot}/%{docsdir}
-cp -prv packages/files/config/modules/{setup,translation} %{buildroot}/%{configdir}/modules
+cp -pv %{SOURCE7} %{buildroot}/%{basedir}/public
+cp -prv schema %{buildroot}/%{docsdir}
+mkdir -p %{buildroot}/%{configdir}/modules/setup
+cp -pv %{SOURCE10} %{buildroot}/%{configdir}/modules/setup/config.ini
+mkdir -p %{buildroot}/%{configdir}/modules/translation
+cp -pv %{SOURCE11} %{buildroot}/%{configdir}/modules/translation/config.ini
 %if 0%{?use_selinux}
-cd selinux
+mkdir -p %{buildroot}%{_docdir}
+cp %{SOURCE1} %{buildroot}%{_docdir}
+cp %{SOURCE2} %{buildroot}%{_docdir}
+cp %{SOURCE3} %{buildroot}%{_docdir}
+cp %{SOURCE4} %{buildroot}%{_docdir}
+cd %{buildroot}%{_docdir}
 for selinuxvariant in %{selinux_variants}
 do
+  make NAME=${selinuxvariant} -f /usr/share/selinux/devel/Makefile
   install -d %{buildroot}%{_datadir}/selinux/${selinuxvariant}
-  install -p -m 644 icingaweb2.pp.${selinuxvariant} %{buildroot}%{_datadir}/selinux/${selinuxvariant}/icingaweb2.pp
+  install -p -m 644 icingaweb2.pp %{buildroot}%{_datadir}/selinux/${selinuxvariant}/icingaweb2.pp
+  make NAME=${selinuxvariant} -f /usr/share/selinux/devel/Makefile clean
 done
 cd -
-# TODO: Fix build problems on Icinga, see https://github.com/Icinga/puppet-icinga_build/issues/11
-#/usr/sbin/hardlink -cv %{buildroot}%{_datadir}/selinux
 %endif
 
 %pre
@@ -369,7 +375,7 @@ fi
 
 %files selinux
 %defattr(-,root,root,0755)
-%doc selinux/*
+%doc %{_docdir}/*
 %{_datadir}/selinux/*/icingaweb2.pp
 %endif
 
