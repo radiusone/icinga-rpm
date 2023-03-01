@@ -256,7 +256,7 @@ cp -pv %{SOURCE8} %{buildroot}/%{bindir}
 %if 0%{?php_bin:1}
 sed -i '1 s~#!.*~#!%{php_bin}~' %{buildroot}/%{bindir}/icingacli
 %endif
-cp -pv %{SOURCE7} %{buildroot}/%{basedir}/public
+cp -pv %{SOURCE7} %{buildroot}/%{basedir}/public/index.php
 cp -prv schema %{buildroot}/%{docsdir}
 mkdir -p %{buildroot}/%{configdir}/modules/setup
 cp -pv %{SOURCE10} %{buildroot}/%{configdir}/modules/setup/config.ini
