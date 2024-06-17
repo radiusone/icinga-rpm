@@ -3,7 +3,7 @@
 %define revision 0
 
 Name:           icingaweb2
-Version:        2.11.4
+Version:        2.12.1
 Release:        %{revision}%{?dist}
 Summary:        Icinga Web 2
 Group:          Applications/System
@@ -50,7 +50,7 @@ Requires:               php-ldap
 %define php_version 7.2
 
 # unsupported PHP version
-%define php_unsupported_version 8.2
+%define php_unsupported_version 8.4
 
 %if 0%{?suse_version}
 %define wwwconfigdir    %{_sysconfdir}/apache2/conf.d
@@ -76,13 +76,8 @@ Requires:                       icinga-l10n >= 1.1.0-1
 Requires:                       icingacli = %{version}-%{release}
 Requires:                       %{name}-common = %{version}-%{release}
 Requires:                       php-Icinga = %{version}-%{release}
-Requires:                       icinga-php-library >= 0.9.0-1
-Requires:                       icinga-php-thirdparty >= 0.11.0-1
-Requires:                       %{name}-vendor-dompdf = %{version}-%{release}
-Requires:                       %{name}-vendor-HTMLPurifier = 1:%{version}-%{release}
-Requires:                       %{name}-vendor-JShrink = %{version}-%{release}
-Requires:                       %{name}-vendor-lessphp = %{version}-%{release}
-Requires:                       %{name}-vendor-Parsedown = %{version}-%{release}
+Requires:                       icinga-php-library >= 0.13.0-1
+Requires:                       icinga-php-thirdparty >= 0.12.0-1
 
 %define basedir         %{_datadir}/%{name}
 %define bindir          %{_bindir}
@@ -125,7 +120,6 @@ Requires:                   php-dom php-curl php-fileinfo
 %if 0%{?rhel} >= 8 || 0%{?fedora} >= 30
 Requires:                   php-json
 %endif
-Requires:                   %{name}-vendor-zf1 = %{version}-%{release}
 %{?amzn:Requires:           php-pecl-imagick}
 %{?fedora:Requires:         php-pecl-imagick}
 %{?suse_version:Requires:   php-gettext php-json php-openssl php-posix}
@@ -165,74 +159,6 @@ SELinux policy for Icinga Web 2
 %endif
 
 
-%package vendor-dompdf
-Summary:    Icinga Web 2 vendor library dompdf
-Group:      Development/Libraries
-License:    LGPLv2.1
-Requires:   %{php_common} >= %{php_version}
-Requires:   %{name}-common = %{version}-%{release}
-
-%description vendor-dompdf
-Icinga Web 2 vendor library dompdf
-
-
-%package vendor-HTMLPurifier
-Epoch:      1
-Summary:    Icinga Web 2 vendor library HTMLPurifier
-Group:      Development/Libraries
-License:    LGPLv2.1
-Requires:   %{php_common} >= %{php_version}
-Requires:   %{name}-common = %{version}-%{release}
-
-%description vendor-HTMLPurifier
-Icinga Web 2 vendor library HTMLPurifier
-
-
-%package vendor-JShrink
-Summary:    Icinga Web 2 vendor library JShrink
-Group:      Development/Libraries
-License:    BSD
-Requires:   %{php_common} >= %{php_version}
-Requires:   %{name}-common = %{version}-%{release}
-
-%description vendor-JShrink
-Icinga Web 2 vendor library JShrink
-
-
-%package vendor-lessphp
-Summary:    Icinga Web 2 vendor library lessphp
-Group:      Development/Libraries
-License:    MIT
-Requires:   %{php_common} >= %{php_version}
-Requires:   %{name}-common = %{version}-%{release}
-
-%description vendor-lessphp
-Icinga Web 2 vendor library lessphp
-
-
-%package vendor-Parsedown
-Summary:    Icinga Web 2 vendor library Parsedown
-Group:      Development/Libraries
-License:    MIT
-Requires:   %{php_common} >= %{php_version}
-Requires:   %{name}-common = %{version}-%{release}
-
-%description vendor-Parsedown
-Icinga Web 2 vendor library Parsedown
-
-
-%package vendor-zf1
-Summary:    Icinga Web 2's fork of Zend Framework 1
-Group:      Development/Libraries
-License:    BSD
-Requires:   %{php_common} >= %{php_version}
-Obsoletes:  %{name}-vendor-Zend < 1.12.20
-Requires:   %{name}-common = %{version}-%{release}
-
-%description vendor-zf1
-Icinga Web 2's fork of Zend Framework 1
-
-
 %prep
 %setup -q
 
@@ -240,12 +166,11 @@ Icinga Web 2's fork of Zend Framework 1
 
 %install
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/{%{basedir}/{modules,library/vendor,public},%{bindir},%{configdir}/modules,%{storagedir},%{logdir},%{phpdir},%{wwwconfigdir},%{_sysconfdir}/bash_completion.d,%{docsdir}}
+mkdir -p %{buildroot}/{%{basedir}/{modules,library,public},%{bindir},%{configdir}/modules,%{storagedir},%{logdir},%{phpdir},%{wwwconfigdir},%{_sysconfdir}/bash_completion.d,%{docsdir}}
 cp -prv application doc %{buildroot}/%{basedir}
 cp -pv etc/bash_completion.d/icingacli %{buildroot}/%{_sysconfdir}/bash_completion.d/icingacli
 cp -prv modules/{monitoring,setup,doc,translation,migrate} %{buildroot}/%{basedir}/modules
 cp -prv library/Icinga %{buildroot}/%{phpdir}
-cp -prv library/vendor/{dompdf,HTMLPurifier*,JShrink,lessphp,Parsedown,Zend} %{buildroot}/%{basedir}/library/vendor
 cp -prv public/{css,font,img,js,error_norewrite.html,error_unavailable.html} %{buildroot}/%{basedir}/public
 %if 0%{?php_fpm:1}
 cp -pv %{SOURCE6} %{buildroot}/%{wwwconfigdir}/icingaweb2.conf
@@ -326,7 +251,6 @@ exit 0
 %dir %{basedir}
 %dir %{basedir}/application
 %dir %{basedir}/library
-%dir %{basedir}/library/vendor
 %dir %{basedir}/modules
 %attr(2770,root,%{icingawebgroup}) %dir %{storagedir}
 %attr(2770,root,%{icingawebgroup}) %config(noreplace) %dir %{configdir}
@@ -379,37 +303,6 @@ fi
 %{_datadir}/selinux/*/icingaweb2.pp
 %endif
 
-
-%files vendor-dompdf
-%defattr(-,root,root)
-%{basedir}/library/vendor/dompdf
-
-
-%files vendor-HTMLPurifier
-%defattr(-,root,root)
-%{basedir}/library/vendor/HTMLPurifier
-%{basedir}/library/vendor/HTMLPurifier.autoload.php
-%{basedir}/library/vendor/HTMLPurifier.php
-
-
-%files vendor-JShrink
-%defattr(-,root,root)
-%{basedir}/library/vendor/JShrink
-
-
-%files vendor-lessphp
-%defattr(-,root,root)
-%{basedir}/library/vendor/lessphp
-
-
-%files vendor-Parsedown
-%defattr(-,root,root)
-%{basedir}/library/vendor/Parsedown
-
-
-%files vendor-zf1
-%defattr(-,root,root)
-%{basedir}/library/vendor/Zend
 
 %changelog
 * Wed Jul 06 2022 Johannes Meyer <johannes.meyer@icinga.com> 2.11.1-1
