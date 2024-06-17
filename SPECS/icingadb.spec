@@ -8,7 +8,7 @@
 %global import_path     %{provider_prefix}
 
 Name:       icingadb
-Version:    1.1.0
+Version:    1.1.1
 Release:    %{revision}%{?dist}
 Summary:    Icinga DB
 Group:      System Environment/Daemons

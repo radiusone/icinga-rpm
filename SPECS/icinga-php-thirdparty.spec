@@ -4,7 +4,7 @@
 %global module_name icinga-php-thirdparty
 
 Name:           %{module_name}
-Version:        0.11.0
+Version:        0.12.1
 Release:        %{revision}%{?dist}
 Summary:        Icinga PHP Thirdparty for Icinga Web 2
 Group:          Applications/System

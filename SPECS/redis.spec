@@ -26,7 +26,7 @@
 %global redis_port 6380
 
 Name:              %{?pkg_prefix}redis
-Version:           7.0.5
+Version:           7.0.9
 Release:           1%{?dist}
 Summary:           A persistent key-value database
 # redis, jemalloc, linenoise, lzf, hiredis are BSD

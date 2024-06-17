@@ -12,7 +12,7 @@
 
 
 Name:       icinga-l10n
-Version:    1.2.0
+Version:    1.3.0
 Release:    %{revision}%{?dist}
 Summary:    Icinga L10n
 License:    GPLv2+
@@ -32,7 +32,6 @@ Source2:    icinga-l10n.te
 %install
 mkdir -p %{buildroot}/%{basedir}
 cp *.md %{buildroot}/%{basedir}
-cp COPYING %{buildroot}/%{basedir}
 cp -prv locale %{buildroot}/%{basedir}
 find %{buildroot}/%{basedir}/locale -name *.po -delete
 %if 0%{?use_selinux}
@@ -61,7 +60,6 @@ L10n (short for Localization) provides all translations available for Icinga.
 %defattr(-,root,root)
 %{basedir}
 %doc README.md
-%doc CONTRIBUTING.md
 
 
 # Selinux package
