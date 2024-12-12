@@ -4,7 +4,7 @@
 %global module_name icingadb
 
 Name:           icingadb-web
-Version:        1.1.2
+Version:        1.1.3
 Release:        %{revision}%{?dist}
 Summary:        Icinga DB Web for Icinga Web 2
 Group:          Applications/System
