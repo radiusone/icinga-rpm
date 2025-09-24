@@ -8,7 +8,7 @@
 %global import_path     %{provider_prefix}
 
 Name:       icingadb
-Version:    1.2.0
+Version:    1.3.0
 Release:    %{revision}%{?dist}
 Summary:    Icinga DB
 Group:      System Environment/Daemons
@@ -26,9 +26,9 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}
 BuildRequires: gcc
 BuildRequires: git
 %if "%{_vendor}" == "suse"
-BuildRequires: ((go >= 1.18 and go < 1.18.4) or go >= 1.19)
+BuildRequires: go >= 1.24.1
 %else
-BuildRequires: ((golang >= 1.18 and golang < 1.18.4) or golang >= 1.19)
+BuildRequires: golang >= 1.24.1
 %endif
 
 %{?systemd_requires}

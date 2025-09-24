@@ -3,7 +3,7 @@
 %define revision 0
 
 Name:           icingaweb2
-Version:        2.12.2
+Version:        2.12.4
 Release:        %{revision}%{?dist}
 Summary:        Icinga Web 2
 Group:          Applications/System
@@ -47,7 +47,7 @@ Requires:               php-ldap
 %endif
 
 # minimum required PHP version
-%define php_version 7.2
+%define php_version 8.2
 
 # unsupported PHP version
 %define php_unsupported_version 8.4

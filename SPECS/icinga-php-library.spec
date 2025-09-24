@@ -4,7 +4,7 @@
 %global module_name icinga-php-library
 
 Name:           %{module_name}
-Version:        0.14.1
+Version:        0.16.0
 Release:        %{revision}%{?dist}
 Summary:        Icinga PHP Library for Icinga Web 2
 Group:          Applications/System
